@@ -5,10 +5,6 @@ import { Icon } from 'native-base';
 import DefaultProps from '../constants/navigation';
 import AppConfig from '../../constants/config';
 
-import RecipesContainer from '../../containers/Recipes';
-import RecipeListingComponent from '../components/Recipe/Listing';
-import RecipeSingleComponent from '../components/Recipe/Single';
-
 import NewsContainer from '../../containers/News.js';
 import NewsListingComponent from '../components/News/Listing';
 import NewsSingleComponent from '../components/News/Single';
@@ -52,20 +48,14 @@ const Index = (
             Layout={NewsListingComponent}
           />
         </Stack>
-
         <Stack
-          key="recipes"
-          title="RECIPES"
-          icon={() => <Icon name="book" {...DefaultProps.icons} />}
+          key="realityCheck"
+          title={AppConfig.appName.toUpperCase()}
+          icon={() => <Icon name="search" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
-          <Scene
-            key="recipes"
-            component={RecipesContainer}
-            Layout={RecipeListingComponent}
-          />
+          <Scene key="search" component={AboutComponent} />
         </Stack>
-
         <Stack
           key="profile"
           title="PROFILE"
@@ -112,16 +102,6 @@ const Index = (
         </Stack>
       </Tabs>
     </Scene>
-
-    <Scene
-      back
-      clone
-      key="recipe"
-      title="RECIPE"
-      {...DefaultProps.navbarProps}
-      component={RecipesContainer}
-      Layout={RecipeSingleComponent}
-    />
 
     <Scene
       back
