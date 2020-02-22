@@ -43,7 +43,7 @@ class NewsListing extends Component {
 
     return (
       <Layout
-        newsId={id}
+        newsId={id} 
         error={error}
         loading={loading}
         newsList={news}
