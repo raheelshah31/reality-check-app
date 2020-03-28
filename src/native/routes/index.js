@@ -25,6 +25,8 @@ import MemberContainer from '../../containers/Member';
 import ProfileComponent from '../components/User/Profile';
 
 import AboutComponent from '../components/About';
+import SearchContainer from '../../containers/Search';
+import SearchComponent from '../components/Verify/Search';
 
 const Index = (
   <Stack hideNavBar>
@@ -54,7 +56,12 @@ const Index = (
           icon={() => <Icon name="search" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
-          <Scene key="search" component={AboutComponent} />
+          <Scene
+            key="search"
+            title="FACT CHECK"
+            component={SearchContainer}
+            Layout={SearchComponent}
+          />
         </Stack>
         <Stack
           key="profile"

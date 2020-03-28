@@ -17,8 +17,6 @@ import Error from '../UI/Error';
 import Spacer from '../UI/Spacer';
 
 const NewsView = ({ error, newsList, newsId }) => {
-  // Error
-  console.log(newsList);
   if (error) return <Error content={error} />;
 
   // Get this News from all Newss

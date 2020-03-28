@@ -1,6 +1,6 @@
 {
-  "name": "rnsk",
-  "homepage": "http://react-boilerplate.mcnam.ee/",
+  "name": "RealityCheck",
+  "homepage": "",
   "version": "0.1.0",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
@@ -39,6 +39,7 @@
     "expo": "^36.0.2",
     "expo-font": "~8.0.0",
     "firebase": "^7.7.0",
+    "lottie-react-native": "~2.6.1",
     "native-base": "^2.13.8",
     "prop-types": "^15.7.2",
     "react": "16.12.0",

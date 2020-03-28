@@ -1,4 +1,4 @@
-const devMode = (process.env.NODE_ENV !== 'development');
+const devMode = process.env.NODE_ENV !== 'development';
 
 export default {
   // App Details
@@ -8,5 +8,7 @@ export default {
   DEV: devMode,
 
   // Google Analytics - uses a 'dev' account while we're testing
-  gaTrackingId: (devMode) ? '221037531' : '221037531',
+  gaTrackingId: devMode ? '221037531' : '221037531',
+
+  SERVER_URL: 'http://192.168.0.7:8080/scoops',
 };

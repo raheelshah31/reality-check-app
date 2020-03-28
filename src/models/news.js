@@ -1,6 +1,6 @@
 import { Firebase, FirebaseRef } from '../lib/firebase';
 import initState from '../store/news';
-
+import CONSTANTS from '../constants/config';
 export default {
   /**
    *  Initial state
@@ -29,6 +29,10 @@ export default {
 
       return { ...state, news };
     },
+    setVerifiedResult(state, payload) {
+      let verified = { isVerified: payload.result };
+      return { ...state, verified };
+    },
   },
 
   /**
@@ -51,6 +55,22 @@ export default {
         })
       ).catch(err => {
         throw err.message;
+      });
+    },
+    checkNews(data) {
+      return new Promise((resolve, reject) => {
+        return fetch(CONSTANTS.SERVER_URL + '/verify', {
+          method: 'POST',
+          body: data,
+        })
+          .then(response => response.json())
+          .then(responseJson => {
+            this.setVerifiedResult(responseJson);
+            return resolve();
+          })
+          .catch(reject);
+      }).catch(error => {
+        throw error.message;
       });
     },
   }),
