@@ -7,25 +7,29 @@ class Login extends Component {
     Layout: PropTypes.func.isRequired,
     member: PropTypes.shape({}).isRequired,
     onFormSubmit: PropTypes.func.isRequired,
-  }
+    onGoogleSignIn: PropTypes.func.isRequired,
+  };
 
   state = {
     error: null,
     success: null,
     loading: false,
-  }
+  };
 
-  onFormSubmit = (data) => {
-    const { onFormSubmit } = this.props;
+  onGoogleSignIn = () => {
+    const { onGoogleSignIn } = this.props;
 
     this.setState({ loading: true });
 
-    return onFormSubmit(data)
-      .then(() => this.setState({
-        loading: false,
-        success: 'Success - Logged in',
-        error: null,
-      })).catch((err) => {
+    return onGoogleSignIn()
+      .then(() =>
+        this.setState({
+          loading: false,
+          success: 'Success - Logged in',
+          error: null,
+        })
+      )
+      .catch((err) => {
         this.setState({
           loading: false,
           success: null,
@@ -33,7 +37,30 @@ class Login extends Component {
         });
         throw err; // To prevent transition back
       });
-  }
+  };
+  
+  onFormSubmit = (data) => {
+    const { onFormSubmit } = this.props;
+
+    this.setState({ loading: true });
+
+    return onFormSubmit(data)
+      .then(() =>
+        this.setState({
+          loading: false,
+          success: 'Success - Logged in',
+          error: null,
+        })
+      )
+      .catch((err) => {
+        this.setState({
+          loading: false,
+          success: null,
+          error: err,
+        });
+        throw err; // To prevent transition back
+      });
+  };
 
   render = () => {
     const { member, Layout } = this.props;
@@ -46,17 +73,19 @@ class Login extends Component {
         loading={loading}
         success={success}
         onFormSubmit={this.onFormSubmit}
+        onGoogleSignIn={this.onGoogleSignIn}
       />
     );
-  }
+  };
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   member: state.member || {},
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   onFormSubmit: dispatch.member.login,
+  onGoogleSignIn: dispatch.member.loginGoogle,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

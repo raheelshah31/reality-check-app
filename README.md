@@ -44,7 +44,7 @@ Via webpack, starts a localhost server on port 3001 [http://localhost:3001](http
 - Install [Redux DevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) into Chrome to see the state of Redux
 
 ----
-
+    
 ## 💡 Inspiration
 
 - [This blog post](http://jkaufman.io/react-web-native-codesharing/) helped put the ideas into action

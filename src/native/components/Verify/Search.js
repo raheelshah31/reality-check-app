@@ -111,7 +111,7 @@ class Search extends React.Component {
                       }}
                       source={require('../../../animations/failed.json')}
                     />
-                    <H2>The content of this article are fake</H2>
+                    <H2>The content of this article cannot be trusted</H2>
                   </View>
                 )}
               </View>

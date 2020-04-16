@@ -20,9 +20,7 @@ export default {
     },
 
     setUserDetails(state, payload) {
-      const {
-        firstName, lastName, signedUp, role,
-      } = payload;
+      const { firstName, lastName, signedUp, role } = payload;
 
       return {
         ...state,
@@ -41,7 +39,7 @@ export default {
   /**
    * Effects/Actions
    */
-  effects: dispatch => ({
+  effects: (dispatch) => ({
     /**
      * Sign Up
      *
@@ -49,46 +47,56 @@ export default {
      * @return {Promise}
      */
     signUp(formData) {
-      const {
-        email, password, password2, firstName, lastName,
-      } = formData;
+      const { email, password, password2, firstName, lastName } = formData;
 
       return new Promise(async (resolve, reject) => {
         // Validation rules
-        if (!firstName) return reject({ message: errorMessages.missingFirstName });
-        if (!lastName) return reject({ message: errorMessages.missingLastName });
+        if (!firstName)
+          return reject({ message: errorMessages.missingFirstName });
+        if (!lastName)
+          return reject({ message: errorMessages.missingLastName });
         if (!email) return reject({ message: errorMessages.missingEmail });
-        if (!password) return reject({ message: errorMessages.missingPassword });
-        if (!password2) return reject({ message: errorMessages.missingPassword });
-        if (password !== password2) return reject({ message: errorMessages.passwordsDontMatch });
+        if (!password)
+          return reject({ message: errorMessages.missingPassword });
+        if (!password2)
+          return reject({ message: errorMessages.missingPassword });
+        if (password !== password2)
+          return reject({ message: errorMessages.passwordsDontMatch });
 
         // Go to Firebase
-        return Firebase.auth().createUserWithEmailAndPassword(email, password)
+        return Firebase.auth()
+          .createUserWithEmailAndPassword(email, password)
           .then((res) => {
             // Send user details to Firebase database
             if (res && res.user.uid) {
-              FirebaseRef.child(`users/${res.user.uid}`).set({
-                firstName,
-                lastName,
-                signedUp: Firebase.database.ServerValue.TIMESTAMP,
-                lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
-              }).then(resolve);
+              FirebaseRef.child(`users/${res.user.uid}`)
+                .set({
+                  firstName,
+                  lastName,
+                  signedUp: Firebase.database.ServerValue.TIMESTAMP,
+                  lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
+                })
+                .then(resolve);
             }
-          }).catch(reject);
-      }).catch((err) => { throw err.message; });
+          })
+          .catch(reject);
+      }).catch((err) => {
+        throw err.message;
+      });
     },
 
     /**
      * Listen for realtime updates on the current user
      */
     listenForMemberProfileUpdates() {
-      const UID = (
-        FirebaseRef
-        && Firebase
-        && Firebase.auth()
-        && Firebase.auth().currentUser
-        && Firebase.auth().currentUser.uid
-      ) ? Firebase.auth().currentUser.uid : null;
+      const UID =
+        FirebaseRef &&
+        Firebase &&
+        Firebase.auth() &&
+        Firebase.auth().currentUser &&
+        Firebase.auth().currentUser.uid
+          ? Firebase.auth().currentUser.uid
+          : null;
 
       if (!UID) return false;
 
@@ -107,7 +115,7 @@ export default {
      * @returns {Promise}
      */
     getMemberData() {
-      if (Firebase === null) return new Promise(resolve => resolve);
+      if (Firebase === null) return new Promise((resolve) => resolve);
 
       // Ensure token is up to date
       return new Promise((resolve) => {
@@ -133,39 +141,82 @@ export default {
 
       return new Promise(async (resolve, reject) => {
         // Validation rules
-        if (!email || email.length === 0) return reject({ message: errorMessages.missingEmail });
+        if (!email || email.length === 0)
+          return reject({ message: errorMessages.missingEmail });
         if (!password || password.length === 0) {
           return reject({ message: errorMessages.missingPassword });
         }
 
         // Go to Firebase
-        return Firebase.auth().setPersistence(Firebase.auth.Auth.Persistence.LOCAL)
-          .then(() => Firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(async (res) => {
-              const userDetails = res && res.user ? res.user : null;
+        return Firebase.auth()
+          .setPersistence(Firebase.auth.Auth.Persistence.LOCAL)
+          .then(() =>
+            Firebase.auth()
+              .signInWithEmailAndPassword(email, password)
+              .then(async (res) => {
+                const userDetails = res && res.user ? res.user : null;
 
-              // Save the user's login data (email, UID)
-              this.setUserLogin(userDetails);
+                // Save the user's login data (email, UID)
+                this.setUserLogin(userDetails);
 
-              // Update last logged in data
-              if (userDetails.uid) {
-                FirebaseRef.child(`users/${userDetails.uid}`).update({
-                  lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
-                });
+                // Update last logged in data
+                if (userDetails.uid) {
+                  FirebaseRef.child(`users/${userDetails.uid}`).update({
+                    lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
+                  });
 
-                // Send verification Email when email hasn't been verified
-                if (userDetails.emailVerified === false) {
-                  Firebase.auth().currentUser.sendEmailVerification()
-                    .catch(() => console.log('Verification email failed to send'));
+                  // Send verification Email when email hasn't been verified
+                  if (userDetails.emailVerified === false) {
+                    Firebase.auth()
+                      .currentUser.sendEmailVerification()
+                      .catch(() =>
+                        console.log('Verification email failed to send')
+                      );
+                  }
+
+                  // Get/Save User Profile (name, signed up date etc)
+                  this.listenForMemberProfileUpdates(dispatch);
                 }
 
-                // Get/Save User Profile (name, signed up date etc)
-                this.listenForMemberProfileUpdates(dispatch);
-              }
+                return resolve();
+              })
+              .catch(reject)
+          );
+      }).catch((err) => {
+        throw err.message;
+      });
+    },
+   /**
+     * Login to Firebase with Google
+     */
+    loginGoogle() {
+      // Go to Firebase
+      return new Promise(async (resolve, reject) => {
+        var provider =  Firebase.auth.GoogleAuthProvider();
+        return Firebase.auth()
+          .setPersistence(Firebase.auth.Auth.Persistence.LOCAL)
+          .then(() =>
+            Firebase.auth()
+              .signInWithPopup(provider)
+              .then(async (res) => {
+                const userDetails = res && res.user ? res.user : null;
+                // Save the user's login data (email, UID)
+                this.setUserLogin(userDetails);
 
-              return resolve();
-            }).catch(reject));
-      }).catch((err) => { throw err.message; });
+                // Update last logged in data
+                if (userDetails.uid) {
+                  FirebaseRef.child(`users/${userDetails.uid}`).update({
+                    lastLoggedIn: Firebase.database.ServerValue.TIMESTAMP,
+                  });
+                }
+
+                return resolve();
+              })
+              .catch(reject)
+          );
+      }).catch((err) => {
+        throw err.message;
+      });
     },
 
     /**
@@ -182,12 +233,16 @@ export default {
         if (!email) return reject({ message: errorMessages.missingEmail });
 
         // Go to Firebase
-        return Firebase.auth().sendPasswordResetEmail(email)
+        return Firebase.auth()
+          .sendPasswordResetEmail(email)
           .then(() => {
             this.resetUser();
             resolve();
-          }).catch(reject);
-      }).catch((err) => { throw err.message; });
+          })
+          .catch(reject);
+      }).catch((err) => {
+        throw err.message;
+      });
     },
 
     /**
@@ -198,7 +253,13 @@ export default {
      */
     updateProfile(formData) {
       const {
-        email, password, password2, firstName, lastName, changeEmail, changePassword,
+        email,
+        password,
+        password2,
+        firstName,
+        lastName,
+        changeEmail,
+        changePassword,
       } = formData;
 
       return new Promise(async (resolve, reject) => {
@@ -207,33 +268,46 @@ export default {
         if (!UID) return reject({ message: errorMessages.memberNotAuthd });
 
         // Validation rules
-        if (!firstName) return reject({ message: errorMessages.missingFirstName });
-        if (!lastName) return reject({ message: errorMessages.missingLastName });
+        if (!firstName)
+          return reject({ message: errorMessages.missingFirstName });
+        if (!lastName)
+          return reject({ message: errorMessages.missingLastName });
         if (changeEmail) {
           if (!email) return reject({ message: errorMessages.missingEmail });
         }
         if (changePassword) {
-          if (!password) return reject({ message: errorMessages.missingPassword });
-          if (!password2) return reject({ message: errorMessages.missingPassword });
-          if (password !== password2) return reject({ message: errorMessages.passwordsDontMatch });
+          if (!password)
+            return reject({ message: errorMessages.missingPassword });
+          if (!password2)
+            return reject({ message: errorMessages.missingPassword });
+          if (password !== password2)
+            return reject({ message: errorMessages.passwordsDontMatch });
         }
 
         // Go to Firebase
-        return FirebaseRef.child(`users/${UID}`).update({ firstName, lastName })
+        return FirebaseRef.child(`users/${UID}`)
+          .update({ firstName, lastName })
           .then(async () => {
             // Update Email address
             if (changeEmail) {
-              await Firebase.auth().currentUser.updateEmail(email).catch(reject);
+              await Firebase.auth()
+                .currentUser.updateEmail(email)
+                .catch(reject);
             }
 
             // Change the Password
             if (changePassword) {
-              await Firebase.auth().currentUser.updatePassword(password).catch(reject);
+              await Firebase.auth()
+                .currentUser.updatePassword(password)
+                .catch(reject);
             }
 
             return resolve();
-          }).catch(reject);
-      }).catch((err) => { throw err.message; });
+          })
+          .catch(reject);
+      }).catch((err) => {
+        throw err.message;
+      });
     },
 
     /**
@@ -242,12 +316,17 @@ export default {
      * @returns {Promise}
      */
     logout() {
-      return new Promise((resolve, reject) => Firebase.auth().signOut()
-        .then(() => {
-          this.resetUser();
-          resolve();
-        }).catch(reject)).catch((err) => { throw err.message; });
+      return new Promise((resolve, reject) =>
+        Firebase.auth()
+          .signOut()
+          .then(() => {
+            this.resetUser();
+            resolve();
+          })
+          .catch(reject)
+      ).catch((err) => {
+        throw err.message;
+      });
     },
-
   }),
 };
