@@ -49,7 +49,7 @@ const NewsListing = ({ error, loading, newsList, reFetch }) => {
       />
 
       <FlatList
-        numColumns={2}
+        numColumns={1}
         data={newsList}
         renderItem={({ item }) => (
           <Card transparent style={{ paddingHorizontal: 6 }}>

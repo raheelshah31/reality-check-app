@@ -19,33 +19,14 @@ const RecipeListing = ({ error, loading, recipes }) => {
   // Build Cards for Listing
   const cards = recipes.map(item => (
     <Card key={`${item.id}`}>
-      <Link to={`/recipe/${item.id}`}>
-        <CardImg top src={item.image} alt={item.title} />
-      </Link>
-      <CardBody>
-        <CardTitle>{item.title}</CardTitle>
-        <CardText>{item.body}</CardText>
-        <Link className="btn btn-primary" to={`/recipe/${item.id}`}>
-          View Recipe
-          {' '}
-          <i className="icon-arrow-right" />
-        </Link>
-      </CardBody>
+      
     </Card>
   ));
 
   // Show Listing
   return (
     <div>
-      <Row className="pt-4 pt-sm-0">
-        <Col sm="12">
-          <h1>Recipes</h1>
-          <p>The following data is read directly from Firebase.</p>
-        </Col>
-      </Row>
-      <Row className={loading ? 'content-loading' : ''}>
-        <Col sm="12" className="card-columns">{cards}</Col>
-      </Row>
+     
     </div>
   );
 };

@@ -37,7 +37,7 @@ export default class App extends React.Component {
   render() {
     const { loading } = this.state;
     const { store, persistor } = this.props;
-
+    console.disableYellowBox = true;
     if (loading) return <Loading />;
 
     return (

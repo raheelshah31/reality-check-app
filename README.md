@@ -1,7 +1,7 @@
 ## 🚀 Getting Started
 
 #### 0. Prerequisites
-Make sure you have Expo CLI installed
+Make sure you have Expo CLI installed also firebase account needs to be created with the firebase conf in the src/constant/firebase.js file
 ```bash
 npm install -g expo-cli
 ```
@@ -48,5 +48,3 @@ Via webpack, starts a localhost server on port 3001 [http://localhost:3001](http
 ## 💡 Inspiration
 
 - [This blog post](http://jkaufman.io/react-web-native-codesharing/) helped put the ideas into action
-
-_If there's any other ideas presented in this repo, that you think worth mentioning - feel free open a pull request :)_

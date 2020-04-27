@@ -16,6 +16,8 @@ import Loading from './components/UI/Loading';
 import './styles/style.scss';
 
 const { persistor, store, dispatch } = configureStore();
+
+console.ignoredYellowBox = ['Warning: Each', 'Warning: Failed'];
 // persistor.purge(); // Debug to clear persist
 
 const Root = () => (

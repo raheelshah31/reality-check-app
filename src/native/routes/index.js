@@ -29,7 +29,7 @@ import SearchContainer from '../../containers/Search';
 import SearchComponent from '../components/Verify/Search';
 
 const Index = (
-  <Stack hideNavBar>
+  <Stack hideNavBar >
     <Scene hideNavBar>
       <Tabs
         key="tabbar"
