@@ -10,10 +10,6 @@ npm install -g expo-cli
 
 _*It's recommended that you install [React Native Debugger](https://github.com/jhen0409/react-native-debugger/releases) and open before `yarn start`._
 
-```bash
-# Clone the repo
-git clone https://github.com/mcnamee/react-native-starter-kit.git
-
 # Install dependencies
 yarn install
 ```
