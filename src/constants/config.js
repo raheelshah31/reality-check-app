@@ -10,5 +10,5 @@ export default {
   // Google Analytics - uses a 'dev' account while we're testing
   gaTrackingId: devMode ? '221037531' : '221037531',
 
-  SERVER_URL: 'http://192.168.0.7:8080/scoops',
+  SERVER_URL: 'http://192.168.0.7:8080/articles',
 };

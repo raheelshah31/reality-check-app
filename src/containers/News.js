@@ -22,6 +22,7 @@ class NewsListing extends Component {
   componentDidMount = () => this.fetchData();
 
   fetchData = (data) => {
+    
     const { fetchNews } = this.props;
     
     this.setState({ loading: true });

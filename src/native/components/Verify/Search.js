@@ -17,7 +17,7 @@ import Loading from '../UI/Loading';
 import Header from '../UI/Header';
 import Spacer from '../UI/Spacer';
 import LottieView from 'lottie-react-native';
-
+import Error from '../UI/Error';
 class Search extends React.Component {
   static propTypes = {
     error: PropTypes.string,
@@ -49,18 +49,23 @@ class Search extends React.Component {
     this.setState({ news: text });
   };
 
+  onTryAgain = () => {
+    console.log("Ayaaa")
+    Actions.refresh({key: Math.random()});
+  }
+
   render() {
     const { loading, error, success, verified } = this.props;
     const { news, loadData } = this.state;
 
     if (loading) return <Loading />;
-    console.log(verified);
-    //if (error && typeof error == 'string') return <Error content={error} />;
+   
+    if (error) return <Error content={error} onTryAgain={this.onTryAgain}/>;
 
     return (
-      <Container style={{ padding: 20 }}>
+      <View style={{flex:1,justifyContent:'flex-start',padding:20}}>
         <Header title="Verify News" />
-        <Content padder>
+        <View padder>
           <Form>
             <Textarea
               rowSpan={5}
@@ -82,21 +87,21 @@ class Search extends React.Component {
               <Text>Search</Text>
             </Button>
             {loadData ? (
-              <View>
-                {verified.isVerified === '1' ? (
+              <View >
+                {verified.isVerified === '0' ? (
                   <View>
                     <LottieView
                       autoPlay
                       speed={0.5}
                       loop={false}
                       style={{
-                        width: 400,
-                        height: 400,
+                        width: 300,
+                        height: 300,
                         alignSelf: 'center',
                       }}
                       source={require('../../../animations/done.json')}
                     />
-                    <H2>This article can be trusted</H2>
+                    <H2 style={{textAlign:'center',marginVertical:20 }}>This article can be trusted</H2>
                   </View>
                 ) : (
                   <View>
@@ -105,20 +110,21 @@ class Search extends React.Component {
                       loop={false}
                       speed={0.5}
                       style={{
-                        width: 400,
-                        height: 400,
+                        width:300,
+                        height: 300,
                         alignSelf: 'center',
+                        
                       }}
                       source={require('../../../animations/failed.json')}
                     />
-                    <H2>The content of this article cannot be trusted</H2>
+                    <H2 style={{textAlign:'center' ,marginVertical:20 }}>This article cannot be trusted</H2>
                   </View>
                 )}
               </View>
             ) : null}
           </Form>
-        </Content>
-      </Container>
+        </View>
+        </View>
     );
   }
 }

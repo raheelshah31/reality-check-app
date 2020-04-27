@@ -16,6 +16,7 @@ class Search extends Component {
   };
 
   onVerify = data => {
+    console.log("onVerify called")
     const { onVerify } = this.props;
 
     this.setState({ loading: true });
@@ -41,7 +42,7 @@ class Search extends Component {
   render = () => {
     const { Layout, data } = this.props;
     const { error, loading, success } = this.state;
-    console.log(data);
+    
     return (
       <Layout
         error={error}

@@ -15,6 +15,7 @@ import { Actions } from 'react-native-router-flux';
 import Messages from '../UI/Messages';
 import Header from '../UI/Header';
 import Spacer from '../UI/Spacer';
+import * as GoogleSignIn from 'expo-google-sign-in';
 
 class Login extends React.Component {
   static propTypes = {
@@ -44,6 +45,12 @@ class Login extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  state = { user: null };
+
+  componentDidMount() {
+    this.initAsync();
+  }
+
   handleChange = (name, val) => this.setState({ [name]: val });
 
   handleGoogleSignIn = () => {
@@ -61,10 +68,43 @@ class Login extends React.Component {
       .then(() => setTimeout(() => Actions.pop(), 1000))
       .catch(() => {});
   };
+  initAsync = async () => {
+    await GoogleSignIn.initAsync();
+    this._syncUserWithStateAsync();
+  };
 
+  _syncUserWithStateAsync = async () => {
+    const user = await GoogleSignIn.signInSilentlyAsync();
+    this.setState({ user });
+  };
+
+  signOutAsync = async () => {
+    await GoogleSignIn.signOutAsync();
+    this.setState({ user: null });
+  };
+
+  signInAsync = async () => {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type, user } = await GoogleSignIn.signInAsync();
+      if (type === 'success') {
+        this._syncUserWithStateAsync();
+      }
+    } catch ({ message }) {
+      alert('login: Error:' + message);
+    }
+  };
+
+  onPress = () => {
+    if (this.state.user) {
+      this.signOutAsync();
+    } else {
+      this.signInAsync();
+    }
+  };
   render() {
     const { loading, error, success } = this.props;
-    const { email } = this.state;
+    const { email ,user} = this.state;
 
     return (
       <Container>
@@ -104,12 +144,13 @@ class Login extends React.Component {
               <Button block onPress={this.handleSubmit} disabled={loading}>
                 <Text>{loading ? 'Loading' : 'Login'}</Text>
               </Button>
+              <Spacer size={30} />
               <Button
                 block
-                onPress={this.handleGoogleSignIn}
+                onPress={this.onPress}
                 disabled={loading}
               >
-                <Text>{loading ? 'Loading' : 'Login with google'}</Text>
+                <Text>{user ? 'Logout with Google': 'Login with Google'}</Text>
               </Button>
             </View>
           </Form>

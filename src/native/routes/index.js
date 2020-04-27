@@ -58,7 +58,7 @@ const Index = (
         >
           <Scene
             key="search"
-            title="FACT CHECK"
+            title={AppConfig.appName.toUpperCase()}
             component={SearchContainer}
             Layout={SearchComponent}
           />
